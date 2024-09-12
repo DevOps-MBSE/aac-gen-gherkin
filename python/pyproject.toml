@@ -8,7 +8,7 @@ version =  0.0.1
 authors = [
     {name="AaC Dev Team", email="asdfasdaf@email.com"},
 ]
-description = "A distinctly different take on Model-Based System Engineering (MBSE) that allows a system modeller to define a system in simple yaml. "
+description = "An AaC plugin that generates Gherkin feature files from model behavior scenarios."
 requires-python = ">= 3.9.13"
 readme = "README.md"
 license = {text = "MIT License"}
@@ -20,7 +20,7 @@ classifiers = [
     "Topic :: Scientific/Engineering"
 ]
 dependencies = [
-    "aac >= 0.4.3",
+    "aac >= 0.4.26",
 ]
 
 [project.optional-dependencies]
@@ -67,8 +67,8 @@ all = [
 gen-gherkin = "gen_gherkin"
 
 [project.urls]
-Homepage = "https://github.com/DevOps-MBSE/aac-gherkin"
-Issues = "https://github.com/DevOps-MBSE/aac-gherkin/issues"
+Homepage = "https://github.com/DevOps-MBSE/aac-gen-gherkin"
+Issues = "https://github.com/DevOps-MBSE/aac-gen-gherkin/issues"
 
 [tool.setuptools]
 include-package-data = true
