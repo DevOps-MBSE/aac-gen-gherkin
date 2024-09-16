@@ -1,0 +1,4 @@
+Notes regarding plugin development:
+
+- The plugin architecture used in AaC is implemented via the Python "pluggy" module.
+- For more info, review the [Plugin Manager](https://github.com/DevOps-MBSE/AaC/blob/1c4214c408775812f93427dc3891c2caa9053caa/python/src/aac/execute/plugin_manager.py) section of the AaC code.
