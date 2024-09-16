@@ -1,9 +1,9 @@
 tasks:
   - name: Serve Sphinx Docs
     init: |
-      cd /workspace/aac-gherkin/docs/
+      cd /workspace/aac-gen-gherkin/docs/
       sleep 120 # Gitpod often takes a long time to install the python environment
-      source /workspace/AaC/python/venv/bin/activate
+      source /workspace/aac-gen-gherkin/python/venv/bin/activate
       sphinx-build source gen_docs # Pre-build the docs so that when Gitpod opens the port it's ready to serve
     command: sphinx-autobuild source gen_docs
 
@@ -13,7 +13,7 @@ tasks:
       python3.9 -m venv venv --system-site-packages
       source venv/bin/activate
       pip install -e .[all]
-    command: cd /workspace/aac-gherkin/python/; source venv/bin/activate # Always launch a console with our virtual env
+    command: cd /workspace/aac-gen-gherkin/python/; source venv/bin/activate # Always launch a console with our virtual env
 
 vscode:
   extensions:

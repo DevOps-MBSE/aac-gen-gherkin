@@ -58,7 +58,6 @@ test = [
 ]
 
 all = [
-    "aac >= 0.4.8",
     "aac-gen-gherkin[doc]",
     "aac-gen-gherkin[test]"
 ]
