@@ -21,7 +21,7 @@ from gen_gherkin.generate_gherkin_feature_files_impl import (
 )
 
 
-generate_gherkin_feature_files_aac_file_name = "gen_gherkin.aac"
+generate_gherkin_feature_files_aac_file_name = "generate_gherkin_feature_files.aac"
 
 
 def run_gen_gherkin_behaviors(
