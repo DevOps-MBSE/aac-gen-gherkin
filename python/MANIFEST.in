@@ -2,4 +2,4 @@ graft src
 graft tests
 
 include tox.ini
-include src/gen_gherkin/gen_gherkin.aac
+include src/gen_gherkin/generate_gherkin_feature_files.aac
