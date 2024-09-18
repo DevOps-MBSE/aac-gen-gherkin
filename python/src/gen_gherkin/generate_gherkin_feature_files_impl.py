@@ -16,6 +16,8 @@ from aac.execute.aac_execution_result import (
     MessageLevel,
 )
 from aac.in_out.files.aac_file import AaCFile
+from aac.plugins.check import run_check
+from aac.plugins.generate import run_generate
 
 plugin_name = "Generate Gherkin Feature Files"
 
@@ -24,8 +26,9 @@ def gen_gherkin_behaviors(
     architecture_file: str, output_directory: str
 ) -> ExecutionResult:
     """
-     Business logic for allowing gen-gherkin-behaviors command to perform Generate Gherkin feature files from AaC model behavior scenarios.
-     Args:
+    Business logic for allowing gen-gherkin-behaviors command to perform Generate Gherkin feature files from AaC model behavior scenarios.
+
+    Args:
         architecture_file (str): The YAML file containing the data models from which to generate Gherkin feature files.
         output_directory (str): The directory into which the generated Gherkin feature files will be written.
 
@@ -35,21 +38,25 @@ def gen_gherkin_behaviors(
     status = ExecutionStatus.GENERAL_FAILURE
     messages: list[ExecutionMessage] = []
 
-    with validated_source(architecture_file) as validation_result:
-        loaded_templates = load_templates(__package__, ".")
-        definitions_dictionary = convert_parsed_definitions_to_dict_definition(validation_result.definitions)
+    # write parsing method that outputs a dictionary
+    # parsing method needs to get behaviors and model_requirements
+    # create generator file
+    # run generate
 
-        for message_template_properties in _get_template_properties(definitions_dictionary):
-            generated_template_messages = _generate_gherkin_feature_files(
-                loaded_templates,
-                output_directory,
-                message_template_properties.get("behaviors", {}),
-                message_template_properties.get("model_requirements", []),
-            )
+    loaded_templates = load_templates(__package__, ".")
+    definitions_dictionary = convert_parsed_definitions_to_dict_definition(validation_result.definitions)
 
-            write_generated_templates_to_file(generated_template_messages)
+    for message_template_properties in _get_template_properties(definitions_dictionary):
+        generated_template_messages = _generate_gherkin_feature_files(
+            loaded_templates,
+            output_directory,
+            message_template_properties.get("behaviors", {}),
+            message_template_properties.get("model_requirements", []),
+        )
 
-        messages.append(f"Successfully generated templates to directory: {output_directory}")
-        status = ExecutionStatus.SUCCESS
+        write_generated_templates_to_file(generated_template_messages)
+
+    messages.append(f"Successfully generated templates to directory: {output_directory}")
+    status = ExecutionStatus.SUCCESS
 
     return ExecutionResult(plugin_name, "gen-gherkin-behaviors", status, messages)
