@@ -13,8 +13,8 @@ plugin:
           type: directory
           description: The directory into which the generated Gherkin feature files will be written.
       acceptance:
-        - name: Output Gherkin feature files.
-          scenario:
+        - name: Output Gherkin feature files
+          scenarios:
             - name: Output Gherkin feature files for behavior scenarios in an Architecture model.
               given:
                 - The {{gen-gherkin-behaviors.input.architecture-file}} contains a valid architecture.
