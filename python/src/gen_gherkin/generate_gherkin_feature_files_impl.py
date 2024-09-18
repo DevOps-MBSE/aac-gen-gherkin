@@ -26,21 +26,30 @@ def gen_gherkin_behaviors(
     """
      Business logic for allowing gen-gherkin-behaviors command to perform Generate Gherkin feature files from AaC model behavior scenarios.
      Args:
-         architecture_file (str): The YAML file containing the data models from which to generate Gherkin feature files.output_directory (str): The directory into which the generated Gherkin feature files will be written.
+        architecture_file (str): The YAML file containing the data models from which to generate Gherkin feature files.
+        output_directory (str): The directory into which the generated Gherkin feature files will be written.
 
     Returns:
-         The results of the execution of the gen-gherkin-behaviors command.
+        The results of the execution of the gen-gherkin-behaviors command.
     """
-
-    # TODO: implement plugin logic here
     status = ExecutionStatus.GENERAL_FAILURE
     messages: list[ExecutionMessage] = []
-    error_msg = ExecutionMessage(
-        "The gen-gherkin-behaviors command for the Generate Gherkin Feature Files plugin has not been implemented yet.",
-        MessageLevel.ERROR,
-        None,
-        None,
-    )
-    messages.append(error_msg)
+
+    with validated_source(architecture_file) as validation_result:
+        loaded_templates = load_templates(__package__, ".")
+        definitions_dictionary = convert_parsed_definitions_to_dict_definition(validation_result.definitions)
+
+        for message_template_properties in _get_template_properties(definitions_dictionary):
+            generated_template_messages = _generate_gherkin_feature_files(
+                loaded_templates,
+                output_directory,
+                message_template_properties.get("behaviors", {}),
+                message_template_properties.get("model_requirements", []),
+            )
+
+            write_generated_templates_to_file(generated_template_messages)
+
+        messages.append(f"Successfully generated templates to directory: {output_directory}")
+        status = ExecutionStatus.SUCCESS
 
     return ExecutionResult(plugin_name, "gen-gherkin-behaviors", status, messages)
