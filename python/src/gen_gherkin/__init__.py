@@ -14,10 +14,12 @@ from aac.execute import hookimpl
 from aac.execute.aac_execution_result import ExecutionResult, ExecutionStatus
 from aac.execute.plugin_runner import PluginRunner
 from aac.in_out.files.aac_file import AaCFile
+from aac.plugins.generate import run_generate
 
 from gen_gherkin.generate_gherkin_feature_files_impl import (
     plugin_name,
     gen_gherkin_behaviors,
+    after_gen_gherkin_behaviors,
 )
 
 
@@ -40,13 +42,21 @@ def run_gen_gherkin_behaviors(
         plugin_name, "gen-gherkin-behaviors", ExecutionStatus.SUCCESS, []
     )
 
-    gen_gherkin_behaviors_result = gen_gherkin_behaviors(
+    content, gen_gherkin_behaviors_result = gen_gherkin_behaviors(
         architecture_file, output_directory
     )
     if not gen_gherkin_behaviors_result.is_success():
         return gen_gherkin_behaviors_result
     else:
         result.add_messages(gen_gherkin_behaviors_result.messages)
+
+    gen_gherkin_behaviors_generate_result = after_gen_gherkin_behaviors(
+        architecture_file, output_directory, run_generate
+    )
+    if not gen_gherkin_behaviors_generate_result.is_success():
+        return gen_gherkin_behaviors_generate_result
+    else:
+        result.add_messages(gen_gherkin_behaviors_generate_result.messages)
 
     return result
 

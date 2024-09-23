@@ -1,0 +1,14 @@
+generator:
+    name: Gherkin Behavior Generator
+    description: A component diagram generation action for Gen-Gherkin plugin.
+    sources:
+        - name: Gherkin Behavior diagram
+          data_source: model
+          templates:
+            - name: Feature File
+              description: Generates a feature file based on model data.
+              template_file: ./behavior.feature.jinja2
+              overwrite: OVERWRITE
+              output_target: CODE
+              output_file_suffix: _feature_file
+              output_file_extension: feature
