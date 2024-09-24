@@ -29,7 +29,8 @@ def run_gen_gherkin_behaviors(
     Generate Gherkin feature files from AaC model behavior scenarios.
 
     Args:
-        architecture_file (str): The YAML file containing the data models from which to generate Gherkin feature files.output_directory (str): The directory into which the generated Gherkin feature files will be written.
+        architecture_file (str): The YAML file containing the data models from which to generate Gherkin feature files.
+        output_directory (str): The directory into which the generated Gherkin feature files will be written.
 
     Returns:
         The results of the execution of the plugin gen-gherkin-behaviors command.

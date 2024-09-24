@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script will install AaC and its dependencies via PyPI.
+# This script will install AaC Gen-Gherkin and its dependencies via PyPI.
 
 install_script_dir=$(dirname "$0")
 cd $install_script_dir

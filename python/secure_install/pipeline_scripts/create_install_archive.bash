@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script gathers AaC's runtime dependencies, creates a hash file, pulls in install scripts, and generally
+# This script gathers AaC Gen-Gherkin's runtime dependencies, creates a hash file, pulls in install scripts, and generally
 #   prepares the secure installation file. We'll delegate to Github Action's automatic zipping of artifacts to
 #   ultimately compress the directory into an archive.
 

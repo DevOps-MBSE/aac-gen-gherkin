@@ -1,4 +1,4 @@
-REM This script will install AaC and its dependencies via PyPI.
+REM This script will install AaC Gen-Gherkin and its dependencies via PyPI.
 
 @echo off
 

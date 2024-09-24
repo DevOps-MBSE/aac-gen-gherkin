@@ -54,7 +54,7 @@ def gen_gherkin_behaviors(
 
     if len(model) < 1:
         msg = ExecutionMessage(
-            "No applicable data to generate a feature file",
+            "No applicable behavior to generate a feature file",
             MessageLevel.ERROR,
             None,
             None,
@@ -62,7 +62,7 @@ def gen_gherkin_behaviors(
         messages.append(msg)
         return None, ExecutionResult(plugin_name, "gen-gherkin-behaviors", ExecutionStatus.GENERAL_FAILURE, messages)
 
-    messages.append(ExecutionMessage(f"Successfully generated templates to directory: {output_directory}", MessageLevel.INFO, None, None))
+    messages.append(ExecutionMessage(f"Successfully generated feature file(s) to directory: {output_directory}", MessageLevel.INFO, None, None))
     status = ExecutionStatus.SUCCESS
 
     return new_files, ExecutionResult(plugin_name, "gen-gherkin-behaviors", status, messages)
@@ -143,6 +143,7 @@ def collect_behavior_entry_properties(behavior_entry: dict) -> list[dict]:
         feature_description = "TODO: Fill out this feature description."  # noqa: T101
     behavior_requirements = []
     scenario_lists = []
+
     if "acceptance" in behavior_entry:
         for acceptance in behavior_entry["acceptance"]:
             if "scenarios" in acceptance:
@@ -151,7 +152,6 @@ def collect_behavior_entry_properties(behavior_entry: dict) -> list[dict]:
     if "requirements" in behavior_entry:
         for requirement in behavior_entry["requirements"]:
             behavior_requirements.append(requirement)
-
     return [
         {
             "feature": {"name": feature_name, "description": feature_description},
