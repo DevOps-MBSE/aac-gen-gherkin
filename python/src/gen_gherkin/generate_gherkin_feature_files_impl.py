@@ -7,11 +7,9 @@
 import yaml
 
 from os import path
-from typing import Any, Callable
+from typing import Callable
 
 from aac.context.definition import Definition
-from aac.context.language_context import LanguageContext
-from aac.context.source_location import SourceLocation
 from aac.execute.aac_execution_result import (
     ExecutionResult,
     ExecutionStatus,
@@ -19,10 +17,6 @@ from aac.execute.aac_execution_result import (
     MessageLevel,
 )
 from aac.in_out.parser._parse_source import parse
-
-from aac.in_out.files.aac_file import AaCFile
-from aac.plugins.check import run_check
-from aac.plugins.generate import run_generate
 
 plugin_name = "Generate Gherkin Feature Files"
 
@@ -43,28 +37,22 @@ def gen_gherkin_behaviors(
     status = ExecutionStatus.GENERAL_FAILURE
     messages: list[ExecutionMessage] = []
 
-    # write parsing method that outputs a dictionary
-    # parsing method needs to get behaviors and model_requirements
-    # create generator file
-    # run generate
-
     definitions_dictionary = parse(architecture_file)
 
     results = _get_template_properties(definitions_dictionary)
 
     new_files = []
-    for result in results:
-        for model in results:
-            yaml_list = []
-            for behavior_entry in model["behaviors"]:
-                yaml_list.append([{"model": {"name": model["name"], "behavior": behavior_entry, "model_requirements": model["model_requirements"]}}])
+    for model in results:
+        yaml_list = []
+        for behavior_entry in model["behaviors"]:
+            yaml_list.append([{"model": {"name": model["name"], "behavior": behavior_entry, "model_requirements": model["model_requirements"]}}])
 
-            new_file = ""
-            for yaml_object in yaml_list:
-                new_file = new_file + yaml.safe_dump_all(yaml_object, default_flow_style=False, sort_keys=False, explicit_start=True)
-            new_files.append(new_file)
+        new_file = ""
+        for yaml_object in yaml_list:
+            new_file = new_file + yaml.safe_dump_all(yaml_object, default_flow_style=False, sort_keys=False, explicit_start=True)
+        new_files.append(new_file)
 
-    if len(result) < 1:
+    if len(model) < 1:
         msg = ExecutionMessage(
             "No applicable data to generate a feature file",
             MessageLevel.ERROR,
@@ -74,10 +62,162 @@ def gen_gherkin_behaviors(
         messages.append(msg)
         return None, ExecutionResult(plugin_name, "gen-gherkin-behaviors", ExecutionStatus.GENERAL_FAILURE, messages)
 
-    messages.append(f"Successfully generated templates to directory: {output_directory}")
+    messages.append(ExecutionMessage(f"Successfully generated templates to directory: {output_directory}", MessageLevel.INFO, None, None))
     status = ExecutionStatus.SUCCESS
 
     return new_files, ExecutionResult(plugin_name, "gen-gherkin-behaviors", status, messages)
+
+
+def collect_models(parsed_models: list[dict]) -> list:
+    """
+    Return a structured dict like parsed_models, but only consisting of model definitions.
+
+    Args:
+        parsed_models (list(dict)): A list of parsed definitions
+
+    Returns:
+        A list containing only model definitions
+    """
+    collected_models = []
+    for model in parsed_models:
+        if model.get_root_key() == "model":
+            collected_models.append(model)
+
+    return collected_models
+
+
+def sanitize_scenario_step_entry(step: str) -> str:
+    """
+    Remove any conflicting keyword from the scenario step.
+
+    Args:
+        step (str): A scenario step
+
+    Returns:
+        The scenario step with conflicting keywords removed
+    """
+    if does_step_start_with_gherkin_keyword(step):
+        return step.split(None, 1)[1]
+    return step
+
+
+def collect_and_sanitize_scenario_steps(scenario: dict) -> list[dict]:
+    """
+    Collect and sanitize scenario steps then return template properties for a 'scenarios' entry.
+
+    Args:
+        scenario (dict): The scenario definition from a model
+
+    Returns:
+        A list of template properties
+    """
+    if "description" in scenario:
+        description = scenario["descrption"]
+    else:
+        description = "TODO: Fill out this feature description."  # noqa: T101
+    scenario_steps = [
+        {
+            "definition": description,
+            "givens": [sanitize_scenario_step_entry(given) for given in scenario["given"]],
+            "whens": [sanitize_scenario_step_entry(when) for when in scenario["when"]],
+            "thens": [sanitize_scenario_step_entry(then) for then in scenario["then"]],
+        }
+    ]
+    return scenario_steps
+
+
+def collect_behavior_entry_properties(behavior_entry: dict) -> list[dict]:
+    """
+    Produce a list of template property dictionaries from a behavior entry.
+
+    Args:
+        behavior_entry (dict): The behavior definition from a model
+
+    Returns:
+        A list of template property dictionaries.
+    """
+    feature_name = behavior_entry["name"]
+    if "description" in behavior_entry:
+        feature_description = behavior_entry["description"]
+    else:
+        feature_description = "TODO: Fill out this feature description."  # noqa: T101
+    behavior_requirements = []
+    scenario_lists = []
+    if "acceptance" in behavior_entry:
+        for acceptance in behavior_entry["acceptance"]:
+            if "scenarios" in acceptance:
+                for scenario in acceptance["scenarios"]:
+                    scenario_lists.append(collect_and_sanitize_scenario_steps(scenario))
+    if "requirements" in behavior_entry:
+        for requirement in behavior_entry["requirements"]:
+            behavior_requirements.append(requirement)
+
+    return [
+        {
+            "feature": {"name": feature_name, "description": feature_description},
+            "scenarios": [scenario for scenario_list in scenario_lists for scenario in scenario_list],
+            "behavior_requirements": behavior_requirements,
+        }
+    ]
+
+
+def collect_model_behavior_properties(model: Definition) -> dict:
+    """
+    Produce a template property dictionary for each behavior entry in a model.
+
+    Args:
+        model (Definition): A model containing behavior properties
+
+    Returns:
+        A dictionary containing a list of behaviors and a list of requirements
+    """
+    behaviors = []
+    requirements = []
+    behavior_lists = []
+    if "behavior" in model.content:
+        for behavior in model.structure["model"]["behavior"]:
+            behaviors.append(behavior)
+            if "requirements" in behavior:
+                for requirement in behavior["requirements"]:
+                    requirements.append(requirement)
+    for behavior in behaviors:
+        behavior_lists.append(collect_behavior_entry_properties(behavior))
+    returning_list = {
+        "name": model.name,
+        "behaviors": [behavior for behavior_list in behavior_lists for behavior in behavior_list],
+        "model_requirements": requirements
+    }
+
+    return returning_list
+
+
+def does_step_start_with_gherkin_keyword(step: str) -> bool:
+    """
+    Check if a string starts with a Gherkin keyword. Gherkin keywords can be found here: https://cucumber.io/docs/gherkin/reference/#keywords.
+
+    Args:
+        step (str): The scenario step being checked
+
+    Returns:
+        A boolean value signifying whether the step begins with a gherkin keyword.
+    """
+    gherkin_keywords = [
+        "Feature",
+        "Rule",
+        "Example",
+        "Given",
+        "When",
+        "Then",
+        "And",
+        "But",
+        "Background",
+        "Example",
+        "Scenario",
+        "Scenario Outline",
+        "Scenario Template",
+    ]
+
+    return step.startswith(tuple(gherkin_keywords))
 
 
 def _get_template_properties(parsed_models: dict) -> list[dict]:
@@ -85,144 +225,52 @@ def _get_template_properties(parsed_models: dict) -> list[dict]:
     Generate a list of template property dictionaries for each gherkin feature file to generate.
 
     Args:
-        parsed_models: a dict of models where the key is the model name and the value is the model dict
+        parsed_models (dict): a dict of models where the key is the model name and the value is the model dict
 
     Returns:
         a list of template property dictionaries
     """
-    def collect_models(parsed_models: list[dict]) -> dict:
-        """Return a structured dict like parsed_models, but only consisting of model definitions."""
-        collected_models = []
-        for model in parsed_models:
-            if model.get_root_key() == "model":
-                collected_models.append(model)
-
-        return collected_models
-
-    def sanitize_scenario_step_entry(step: str) -> str:
-        """Remove any conflicting keyword from the scenario step."""
-        if does_step_start_with_gherkin_keyword(step):
-            return step.split(None, 1)[1]
-        return step
-
-    def collect_and_sanitize_scenario_steps(scenario: dict) -> list[dict]:
-        """Collect and sanitize scenario steps then return template properties for a 'scenarios' entry."""
-        if "description" in scenario:
-            description = scenario["descrption"]
-        else:
-            description = "TODO: Fill out this feature description."  # noqa: T101
-        scenario_steps = [
-            {
-                "definition": description,
-                "givens": [sanitize_scenario_step_entry(given) for given in scenario["given"]],
-                "whens": [sanitize_scenario_step_entry(when) for when in scenario["when"]],
-                "thens": [sanitize_scenario_step_entry(then) for then in scenario["then"]],
-            }
-        ]
-        return scenario_steps
-
-    def collect_behavior_entry_properties(behavior_entry: dict) -> list[dict]:
-        """Produce a list of template property dictionaries from a behavior entry."""
-        feature_name = behavior_entry["name"]
-        if "description" in behavior_entry:
-            feature_description = behavior_entry["description"]
-        else:
-            feature_description = "TODO: Fill out this feature description."  # noqa: T101
-        behavior_scenarios = []
-        behavior_requirements = []
-        scenario_lists = []
-        if "acceptance" in behavior_entry:
-            for acceptance in behavior_entry["acceptance"]:
-                if "scenarios" in acceptance:
-                    for scenario in acceptance["scenarios"]:
-                        scenario_lists.append(collect_and_sanitize_scenario_steps(scenario))
-        if "requirements" in behavior_entry:
-            for requirement in behavior_entry["requirements"]:
-                behavior_requirements.append(requirement)
-
-        return[
-            {
-                "feature": {"name": feature_name, "description": feature_description},
-                "scenarios": [scenario for scenario_list in scenario_lists for scenario in scenario_list],
-                "behavior_requirements": behavior_requirements,
-            }
-        ]
-
-    def collect_model_behavior_properties(model: Definition) -> dict:
-        """
-        Produce a template property dictionary for each behavior entry in a model.
-
-        Args:
-            model: A model containing behavior properties
-
-        Returns:
-            A dictionary containing a list of behaviors and a list of requirements
-        """
-        behaviors = []
-        requirements = []
-        behavior_lists = []
-        features = []
-        scenarios = []
-        behavior_requirements = []
-        if "behavior" in model.content:
-            for behavior in model.structure["model"]["behavior"]:
-                behaviors.append(behavior)
-                if "requirements" in behavior:
-                    for requirement in behavior["requirements"]:
-                        requirements.append(requirement)
-        for behavior in behaviors:
-           behavior_lists.append(collect_behavior_entry_properties(behavior))
-        returning_list = {
-            "name": model.name,
-            "behaviors": [behavior for behavior_list in behavior_lists for behavior in behavior_list],
-            "model_requirements": requirements
-        }
-
-        return returning_list
-
-    def does_step_start_with_gherkin_keyword(step: str) -> bool:
-        """
-        Check if a string starts with a Gherkin keyword.
-
-        Gherkin keywords can be found here: https://cucumber.io/docs/gherkin/reference/#keywords
-        """
-        gherkin_keywords = [
-            "Feature",
-            "Rule",
-            "Example",
-            "Given",
-            "When",
-            "Then",
-            "And",
-            "But",
-            "Background",
-            "Example",
-            "Scenario",
-            "Scenario Outline",
-            "Scenario Template",
-        ]
-
-        return step.startswith(tuple(gherkin_keywords))
 
     return [collect_model_behavior_properties(model) for model in collect_models(parsed_models)]
 
 
 def after_gen_gherkin_behaviors(architecture_file: str, output_directory: str, run_generate: Callable) -> ExecutionResult:
     """
+    Runs Generate on the output of the gen_gherkin_behaviors plugin.
+
+    Args:
+        architecture_file (str): The YAML file containing the data models from which to generate Gherkin feature files.
+        output_directory (str): The directory into which the generated Gherkin feature files will be written.
+        run_generate (Callable): The Generation function which generates a feature file
+
+    Returns:
+        The results of the execution of the generate command.
+
     """
     new_files, execution_status = gen_gherkin_behaviors(architecture_file, output_directory)
 
     generator_file = path.abspath(path.join(path.dirname(__file__), "./behavior_generator.aac"))
+    messages = []
+    status = ExecutionStatus.GENERAL_FAILURE
 
     for new_file in new_files:
-        print(new_file)
-        return run_generate(
-            aac_plugin_file=new_file,
-            generator_file=generator_file,
-            code_output=output_directory,
-            test_output="",
-            doc_output="",
-            no_prompt=True,
-            force_overwrite=True,
-            evaluate=False,
+        result = (
+            run_generate(
+                aac_plugin_file=new_file,
+                generator_file=generator_file,
+                code_output=output_directory,
+                test_output="",
+                doc_output="",
+                no_prompt=True,
+                force_overwrite=True,
+                evaluate=False,
+            )
         )
+        if result.status_code == ExecutionStatus.SUCCESS:
+            messages.append(ExecutionMessage("Successful generation of feature file", MessageLevel.INFO, None, None))
+            status = ExecutionStatus.SUCCESS
+        else:
+            messages.append(ExecutionMessage("Failure in generation of feature file"), MessageLevel.ERROR, None, None)
+            status = ExecutionStatus.GENERAL_FAILURE
+
+    return ExecutionResult(plugin_name, "gen-gherkin-behaviors", status, messages)

@@ -2,26 +2,23 @@
 
 {% for requirement_id in model_requirements %}
 @{{requirement_id}}
-{% endfor %}
+{% endfor -%}
 Feature: {{model.behavior.feature.description}}
     {% for scenario in model.behavior.scenarios %}
-
-    {% for requirement_id in model.behavior.behavior_requirements %}
+    {% for requirement_id in model.behavior.behavior_requirements -%}
     @{{requirement_id}}
     {% endfor %}
     Scenario: {{scenario.description}}
     {% set given_joiner = joiner("And") %}
-    {% for given in scenario.givens %}
+    {% for given in scenario.givens -%}
     {{given_joiner() or "Given"}} {{given}}
     {% endfor -%}
-
     {% set when_joiner = joiner("And") %}
-    {% for when in scenario.whens %}
+    {%- for when in scenario.whens -%}
     {{when_joiner() or "When"}} {{when}}
     {% endfor -%}
-
-    {% set then_joiner = joiner("And") %}
-    {% for then in scenario.thens %}
+    {%- set then_joiner = joiner("And") -%}
+    {%- for then in scenario.thens -%}
     {{then_joiner() or "Then"}} {{then}}
-    {% endfor -%}
-    {%- endfor %}
+    {% endfor %}
+    {% endfor %}
