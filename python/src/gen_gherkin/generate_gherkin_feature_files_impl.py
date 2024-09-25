@@ -95,7 +95,6 @@ def after_gen_gherkin_behaviors(architecture_file: str, output_directory: str, r
 
     """
     new_file, execution_status = gen_gherkin_behaviors(architecture_file, output_directory)
-    print(new_file)
 
     generator_file = path.abspath(path.join(path.dirname(__file__), "./behavior_generator.aac"))
 
