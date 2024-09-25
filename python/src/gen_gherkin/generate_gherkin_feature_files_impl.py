@@ -41,12 +41,11 @@ def gen_gherkin_behaviors(
 
     results = _get_template_properties(definitions_dictionary)
 
-    # new_files = []
+
     yaml_list = []
-    # for model in results:
-        # yaml_list = []
     for model in results:
-        yaml_list.append([{"behavior": model["behaviors"]}])
+        for behavior in model["behaviors"]:
+            yaml_list.append([{"behavior": behavior}])
 
     new_file = ""
     for yaml_object in yaml_list:
@@ -111,13 +110,9 @@ def collect_and_sanitize_scenario_steps(scenario: dict) -> list[dict]:
     Returns:
         A list of template properties
     """
-    if "description" in scenario:
-        description = scenario["descrption"]
-    else:
-        description = "TODO: Fill out this feature description."  # noqa: T101
     scenario_steps = [
         {
-            "definition": description,
+            "name": scenario["name"],
             "givens": [sanitize_scenario_step_entry(given) for given in scenario["given"]],
             "whens": [sanitize_scenario_step_entry(when) for when in scenario["when"]],
             "thens": [sanitize_scenario_step_entry(then) for then in scenario["then"]],
@@ -156,7 +151,7 @@ def collect_behavior_entry_properties(name: str, behavior_entry: dict) -> list[d
             behavior_requirements.append(requirement)
     return [
         {
-            "model_name": name,
+            "name": name,
             "feature": {"name": feature_name, "description": feature_description},
             "scenarios": [scenario for scenario_list in scenario_lists for scenario in scenario_list],
             "behavior_requirements": behavior_requirements,
@@ -182,6 +177,7 @@ def collect_model_behavior_properties(model: Definition) -> dict:
     for behavior in behaviors:
         behavior_lists.append(collect_behavior_entry_properties(model.name, behavior))
     returning_list = {
+        "name": model.name,
         "behaviors": [behavior for behavior_list in behavior_lists for behavior in behavior_list],
     }
 
@@ -245,11 +241,11 @@ def after_gen_gherkin_behaviors(architecture_file: str, output_directory: str, r
 
     """
     new_file, execution_status = gen_gherkin_behaviors(architecture_file, output_directory)
+    print(new_file)
 
     generator_file = path.abspath(path.join(path.dirname(__file__), "./behavior_generator.aac"))
     messages = []
     status = ExecutionStatus.GENERAL_FAILURE
-    print(new_file)
 
     return run_generate(
         aac_plugin_file=new_file,
@@ -261,11 +257,3 @@ def after_gen_gherkin_behaviors(architecture_file: str, output_directory: str, r
         force_overwrite=True,
         evaluate=False,
         )
-    # if result.status_code == ExecutionStatus.SUCCESS:
-    #     messages.append(ExecutionMessage("Successful generation of feature file", MessageLevel.INFO, None, None))
-    #     status = ExecutionStatus.SUCCESS
-    # else:
-    #     messages.append(ExecutionMessage("Failure in generation of feature file"), MessageLevel.ERROR, None, None)
-    #     status = ExecutionStatus.GENERAL_FAILURE
-
-    # return ExecutionResult(plugin_name, "gen-gherkin-behaviors", status, messages)
