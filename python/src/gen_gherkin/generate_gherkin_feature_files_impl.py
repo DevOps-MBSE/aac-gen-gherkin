@@ -41,7 +41,6 @@ def gen_gherkin_behaviors(
 
     results = _get_template_properties(definitions_dictionary)
 
-
     yaml_list = []
     for model in results:
         for behavior in model["behaviors"]:
@@ -244,8 +243,6 @@ def after_gen_gherkin_behaviors(architecture_file: str, output_directory: str, r
     print(new_file)
 
     generator_file = path.abspath(path.join(path.dirname(__file__), "./behavior_generator.aac"))
-    messages = []
-    status = ExecutionStatus.GENERAL_FAILURE
 
     return run_generate(
         aac_plugin_file=new_file,
@@ -256,4 +253,4 @@ def after_gen_gherkin_behaviors(architecture_file: str, output_directory: str, r
         no_prompt=True,
         force_overwrite=True,
         evaluate=False,
-        )
+    )
