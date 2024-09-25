@@ -78,9 +78,8 @@ def collect_behavior_entry_properties(name: str, behavior_entry: dict) -> list[d
 
     if "acceptance" in behavior_entry:
         for acceptance in behavior_entry["acceptance"]:
-            if "scenarios" in acceptance:
-                for scenario in acceptance["scenarios"]:
-                    scenario_lists.append(collect_and_sanitize_scenario_steps(scenario))
+            for scenario in acceptance["scenarios"]:
+                scenario_lists.append(collect_and_sanitize_scenario_steps(scenario))
     if "requirements" in behavior_entry:
         for requirement in behavior_entry["requirements"]:
             behavior_requirements.append(requirement)
