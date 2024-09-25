@@ -5,6 +5,12 @@ plugin:
   commands:
     - name: gen-gherkin-behaviors
       help_text: Generate Gherkin feature files from AaC model behavior scenarios.
+      run_before:
+        - plugin: Check AaC
+          command: check
+      run_after:
+        - plugin: Generate
+          command: generate
       input:
         - name: architecture-file
           type: file
