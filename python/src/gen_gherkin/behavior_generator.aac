@@ -3,7 +3,7 @@ generator:
     description: A component diagram generation action for Gen-Gherkin plugin.
     sources:
         - name: Gherkin Behavior diagram
-          data_source: model
+          data_source: behavior
           templates:
             - name: Feature File
               description: Generates a feature file based on model data.
