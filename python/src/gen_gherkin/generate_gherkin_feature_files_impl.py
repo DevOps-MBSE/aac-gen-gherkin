@@ -58,12 +58,16 @@ def gen_gherkin_behaviors(
 
     yaml_list = []
     for model in results:
+        behavior_list = []
         for behavior in model["behaviors"]:
-            yaml_list.append([{"behavior": behavior}])
+            behavior_list.append(behavior)
+            print(type(behavior))
+        yaml_list.append([{"model": model}])
 
     new_file = ""
     for yaml_object in yaml_list:
         new_file = new_file + yaml.safe_dump_all(yaml_object, default_flow_style=False, sort_keys=False, explicit_start=True)
+    print(new_file)
 
     if len(model) < 1:
         msg = ExecutionMessage(
