@@ -1,7 +1,7 @@
 from click.testing import CliRunner
 from os import listdir, path
-from typing import Tuple
 from tempfile import TemporaryDirectory
+from typing import Tuple
 from unittest import TestCase
 
 from aac.execute.aac_execution_result import ExecutionStatus
@@ -38,7 +38,7 @@ class TestGenerateGherkinFeatureFiles(TestCase):
             args = [aac_file_path, temp_dir]
             exit_code, output_message = (self.run_gen_gherkin_behaviors_cli_command_with_args(args))
             self.assertEqual(0, exit_code)
-            self.assertTrue(len(output_message) > 0)
+            self.assertIn("Successfully generated feature file(s) to directory", output_message)
 
             temp_dir_files = listdir(temp_dir)
             self.assertNotEqual(0, len(temp_dir_files))
@@ -47,12 +47,12 @@ class TestGenerateGherkinFeatureFiles(TestCase):
                 temp_file_content = open(path.join(temp_dir, temp_file), "r")
                 temp_content = temp_file_content.read()
                 self.assertIn("Feature:", temp_content)
+                self.assertIn("Scenario", temp_content)
+                self.assertIn("Given", temp_content)
+                self.assertIn("When", temp_content)
+                self.assertIn("Then", temp_content)
                 temp_file_content.close()
 
-        # TODO:  perform assertions against the output message
-        self.assertEqual(0, exit_code)  # asserts the command ran successfully
-        self.assertTrue(len(output_message) > 0)  # asserts the command produced output
-        # TODO:  assert the output message is correct
 
     def test_cli_gen_gherkin_behaviors_failure(self):
         with TemporaryDirectory() as temp_dir:

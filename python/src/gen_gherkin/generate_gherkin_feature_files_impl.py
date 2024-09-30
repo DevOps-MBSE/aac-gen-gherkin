@@ -5,7 +5,6 @@
 
 # There may be some unused imports depending on the definition of the plugin, be sure to remove unused imports.
 import yaml
-
 from os import path
 from typing import Callable
 
@@ -58,10 +57,8 @@ def gen_gherkin_behaviors(
 
     yaml_list = []
     for model in results:
-        behavior_list = []
         for behavior in model["behaviors"]:
             yaml_list.append([{"behavior": behavior}])
-
 
     new_file = ""
     for yaml_object in yaml_list:

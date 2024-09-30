@@ -13,8 +13,8 @@ model:
     - name: log
       model: MathLogger
   behavior:
-    - name: Perform simple math function (add or subtract)
-      description: Add or subtract numbers
+    - name: Perform simple math function
+      description: Add, subtract, multiply, and divide two numbers
       requirements:
         - "CALC-1"
         - "CALC-2"

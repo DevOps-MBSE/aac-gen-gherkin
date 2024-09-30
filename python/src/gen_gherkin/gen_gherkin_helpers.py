@@ -1,6 +1,7 @@
 """Helper methods for extracting and sorting pertinent data for use in generating feature files."""
+from re import sub
+
 from aac.context.definition import Definition
-import re
 
 
 def collect_models(parsed_models: list[dict]) -> list:
@@ -70,8 +71,8 @@ def collect_behavior_entry_properties(name: str, behavior_entry: dict) -> list[d
         A list of template property dictionaries.
     """
     feature_name = behavior_entry["name"]
-    feature_name = re.sub(" ", "_", feature_name)
-    feature_name = re.sub(r"\W+", "", feature_name)
+    feature_name = sub(" ", "_", feature_name)
+    feature_name = sub(r"\W+", "", feature_name)
     if "description" in behavior_entry:
         feature_description = behavior_entry["description"]
     else:
