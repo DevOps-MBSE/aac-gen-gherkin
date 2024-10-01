@@ -46,3 +46,4 @@ def step_result(context):
     temp_dir_files = listdir(context.output_directory)
     assert(0 != len(temp_dir_files))
     rmtree(context.output_directory)
+    assert(path.isdir(context.output_directory) == False)
