@@ -6,9 +6,9 @@ Feature: Output Gherkin feature files
 
   Scenario: Output Gherkin feature files for behavior scenarios in an Architecture model.
 
-      Given The "../test/calc/model/calculator.yaml" contains a valid architecture.
-      When The aac app is run with the gen-gherkin-behaviors command and a valid architecture file.
-      Then The aac app is run with the gen-gherkin-behaviors command and a valid architecture file.
+      Given The "tests/calc/model/calculator.yaml" contains a valid architecture.
+      When The aac app is run with the gen-gherkin-behaviors command, a valid architecture file, and an "./output".
+      Then Gherkin feature files are written to an output directory.
 
 
 

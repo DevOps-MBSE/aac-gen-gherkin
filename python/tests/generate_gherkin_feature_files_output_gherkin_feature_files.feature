@@ -5,11 +5,10 @@
 Feature: Output Gherkin feature files
 
   Scenario: Output Gherkin feature files for behavior scenarios in an Architecture model.
-  
+
       Given The {{gen-gherkin-behaviors.input.architecture-file}} contains a valid architecture.
       When The aac app is run with the gen-gherkin-behaviors command and a valid architecture file.
       Then The aac app is run with the gen-gherkin-behaviors command and a valid architecture file.
-      
-    
-  
-  
+
+
+
