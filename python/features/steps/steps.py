@@ -1,9 +1,9 @@
 """Steps for the behave gen-gherkin testing."""
 from behave import given, when, then
 from click.testing import CliRunner
+from os import listdir, path
 from shutil import rmtree
 from typing import Tuple
-from os import listdir, path
 
 from aac.execute.command_line import cli, initialize_cli
 from aac.plugins.check import run_check
@@ -27,7 +27,7 @@ def run_gen_gherkin_behaviors_cli_command_with_args(
 @given('The "{architecture_file}" contains a valid architecture.')
 def step_check(context, architecture_file: str):
     """
-    Runs check on the given architecture_file.
+    Runs check on the given architecture file.
 
     Args:
         context: Active behave context.
@@ -41,11 +41,11 @@ def step_check(context, architecture_file: str):
 @when('The aac app is run with the gen-gherkin-behaviors command, a valid architecture file, and an "{output_directory}".')
 def step_impl(context, output_directory):
     """
-    Runs the aac-gen-gherkin command.
+    Runs the gen-gherkin-behaviors command.
 
     Args:
         context: Active behave context.
-        output_directory (str): The directory that the gen-gherkin command will output to.
+        output_directory (str): The directory that the gen-gherkin-behaviors command will output to.
     """
     context.output_directory = output_directory
     exit_code, message = run_gen_gherkin_behaviors_cli_command_with_args(args=[context.architecture_file, output_directory])
