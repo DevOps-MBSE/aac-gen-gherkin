@@ -52,18 +52,8 @@ Each `scenario` has a number of steps:
 
 `then`: This step describes what happens after the `model` performs its action.  Typically it will include whatever output is created by the `model`'s action.
 
-Along with the `scenario` steps, `features` and `scenario`s can also have requirements, signified by the `requirement ID` before the `feature` or `scenario`, such as the following excerpt taken from the `Math Message Handler` feature file:
-```text
-@SQRT-1
-Feature:
-
-    @SQRT-2
-    Scenario: Request handler issues error for square root command with negative value
-
-        Given The MathMessageHandler is running
-        When The user makes a square root request with MathRequest
-        Then The user gets a MathResponse response with the error
-```
+Along with the `scenario` steps, `features` and `scenario`s can also have requirements, signified by the `requirement ID` before the `feature` or `scenario`, such as the following feature file, which contains many examples:
+![Math Message Handler API](../images/mathmessagehandler_api_feature_file.PNG)
 
 ## Plugin Usage Example
 The calculator model system contains three model definitions: `calculator`, `mathlogger`, and `mathmessagehandler`.
