@@ -20,6 +20,17 @@ The directory in which the gherkin feature files will be generated.
 The `gen-gherkin` plugin will generate feature files based on the `behavior` field of `model` definitions.
 `behavior` definitions also have a field named `acceptance`.  The  `acceptance` field is where the feature files scenario steps will come from.
 
+### Gherkin Syntax
+When output to a feature file, a `model`s `behavior` becomes a `feature`, and its `acceptance` becomes a `scenario`.
+
+Each `scenario` has a number of steps:
+
+`given`: An optional step, but is usually recommended to include.  The `given` step describes the models initial state.
+
+`when`: This step describes what kicks off the action the `model` will perform, be it called through a command line or triggered some other way.
+
+`then`: This step describes what happens after the `model` performs its action.  Typically it will include whatever output is created by the `model`'s action.
+
 ### Example Model Definition
 
 ```yaml
@@ -40,17 +51,6 @@ model:
                   then:
                     - The model does something in response.
 ```
-
-### Gherkin Syntax
-When output to a feature file, a `model`s `behavior` becomes a `feature`, and its `acceptance` becomes a `scenario`.
-
-Each `scenario` has a number of steps:
-
-`given`: An optional step, but is usually recommended to include.  The `given` step describes the models initial state.
-
-`when`: This step describes what kicks off the action the `model` will perform, be it called through a command line or triggered some other way.
-
-`then`: This step describes what happens after the `model` performs its action.  Typically it will include whatever output is created by the `model`'s action.
 
 Along with the `scenario` steps, `features` and `scenario`s can also have requirements, signified by the `requirement ID` before the `feature` or `scenario`, such as the following feature file, which contains several highlighted examples:
 ![Math Message Handler API](../images/mathmessagehandler_api_feature_file_req_highlights.PNG)
