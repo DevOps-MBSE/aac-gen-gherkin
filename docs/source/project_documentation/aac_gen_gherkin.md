@@ -43,15 +43,26 @@ model:
 
 ### Gherkin Syntax
 When output to a feature file, a `model`s `behavior` becomes a `feature`, and its `acceptance` becomes a `scenario`.
+
 Each `scenario` has a number of steps:
+
 `given`: An optional step, but is usually recommended to include.  The `given` step describes the models initial state.
+
 `when`: This step describes what kicks off the action the `model` will perform, be it called through a command line or triggered some other way.
+
 `then`: This step describes what happens after the `model` performs its action.  Typically it will include whatever output is created by the `model`'s action.
 
-Along with the `scenario` steps, `features` and `scenario`s can also have requirements, signified by the `requirement ID` before the `feature` or `scenario`, such as the following:
-```
-@CALC-1
-Scenario: example scenario
+Along with the `scenario` steps, `features` and `scenario`s can also have requirements, signified by the `requirement ID` before the `feature` or `scenario`, such as the following excerpt taken from the `Math Message Handler` feature file:
+```text to remove the highlighting since there isn't special syntax highlighting for the output in the feature files.
+@SQRT-1
+Feature:
+
+    @SQRT-2
+    Scenario: Request handler issues error for square root command with negative value
+
+        Given The MathMessageHandler is running
+        When The user makes a square root request with MathRequest
+        Then The user gets a MathResponse response with the error
 ```
 
 ## Plugin Usage Example
