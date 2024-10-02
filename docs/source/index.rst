@@ -5,3 +5,4 @@
    :caption: Project Documentation
    :hidden:
 
+    Gen Gherkin Behaviors <project_documentation/aac_gen_gherkin>

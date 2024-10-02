@@ -41,6 +41,19 @@ model:
                     - The model does something in response.
 ```
 
+### Gherkin Syntax
+When output to a feature file, a `model`s `behavior` becomes a `feature`, and its `acceptance` becomes a `scenario`.
+Each `scenario` has a number of steps:
+`given`: An optional step, but is usually recommended to include.  The `given` step describes the models initial state.
+`when`: This step describes what kicks off the action the `model` will perform, be it called through a command line or triggered some other way.
+`then`: This step describes what happens after the `model` performs its action.  Typically it will include whatever output is created by the `model`'s action.
+
+Along with the `scenario` steps, `features` and `scenario`s can also have requirements, signified by the `requirement ID` before the `feature` or `scenario`, such as the following:
+```
+@CALC-1
+Scenario: example scenario
+```
+
 ## Plugin Usage Example
 The calculator model system contains three model definitions: `calculator`, `mathlogger`, and `mathmessagehandler`.
 `mathlogger` and `mathmessagehandler` each contain one behavior definition, while calculator contains two.
