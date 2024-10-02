@@ -53,7 +53,7 @@ Each `scenario` has a number of steps:
 `then`: This step describes what happens after the `model` performs its action.  Typically it will include whatever output is created by the `model`'s action.
 
 Along with the `scenario` steps, `features` and `scenario`s can also have requirements, signified by the `requirement ID` before the `feature` or `scenario`, such as the following excerpt taken from the `Math Message Handler` feature file:
-```text to remove the highlighting since there isn't special syntax highlighting for the output in the feature files.
+```text
 @SQRT-1
 Feature:
 
