@@ -79,6 +79,10 @@ No applicable behavior to generate a feature file
 
 After running the above command, the following four feature files will be generated in `./output_directory`.  The names of the feature files are concatenations of the model name (`calculator`) and the behavior name (`example_behavior`):
 
+![Output Directory](../images/output_directory_feature_files.png)
+
+The contents of these generated files are bellow:
+
 `calculator_example_behavior_feature_file.feature`:
 ![Calculator Example Behavior](../images/calculator_example_behavior_feature_file.png)
 
