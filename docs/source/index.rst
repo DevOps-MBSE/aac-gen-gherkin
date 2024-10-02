@@ -1,7 +1,7 @@
 AaC Gen-Gherkin Plugin
 ====================
 
-Plant UML - Generate feature files from your AaC model.
+Gen-Gherkin - Generate feature files from your AaC model.
 
 The AaC Gen-Gherkin (aac-gen-gherkin) Plugin is an extension of the core AaC tool and generates a diagram from an AaC model. General AaC documentation can be found `here`_.
 
