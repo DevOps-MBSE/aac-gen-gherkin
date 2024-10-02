@@ -9,7 +9,7 @@ The AaC Gen-Gherkin (aac-gen-gherkin) Plugin is an extension of the core AaC too
 
 Installation
 ------------
-AaC requires Python 3.9.13 installed prior to use.  And AaC Plant-UML requires AaC to be installed prior to use. Install the AaC core tool using pip::
+AaC requires Python 3.9.13 installed prior to use.  And AaC Gen-Gherkin requires AaC to be installed prior to use. Install the AaC core tool using pip::
 
     pip install aac
 
