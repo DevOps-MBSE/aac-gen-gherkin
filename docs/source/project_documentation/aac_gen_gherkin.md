@@ -60,13 +60,20 @@ The calculator model system contains three model definitions: `calculator`, `mat
 The `example_behavior` behavior in the calculator model exists only to demonstrate the gen-gherkin plugins ability to generate multiple feature files per model.
 
 Running the following command will generate a gherkin feature file for each behavior definition in the system.
+
 ```bash
 $ aac gen-gherkin-behaviors ./tests/calc/model/calculator.yaml ./output_directory
 ```
 It will also return the following output to the command line:
+
 ```bash
 All AaC constraint checks were successful.
 Successfully generated feature file(s) to directory: ./output_directory
+```
+If the architecture file provided to the command is not a model, or does not contain a behavior field, it will return the following failure message to the command line:
+
+```bash
+No applicable behavior to generate a feature file
 ```
 
 After running the above command, the following four feature files will be generated in `./output_directory`.  The names of the feature files are concatenations of the model name (`calculator`) and the behavior name (`example_behavior`):
