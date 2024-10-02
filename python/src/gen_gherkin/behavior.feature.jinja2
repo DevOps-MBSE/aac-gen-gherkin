@@ -4,10 +4,10 @@
 @{{requirement_id}}
 {% endfor %}
 Feature: {{behavior.feature.description}}
-    {% for scenario in behavior.scenarios -%}
+    {% for scenario in behavior.scenarios %}
     {% for requirement_id in scenario.scenario_requirements -%}
     @{{requirement_id}}
-    {% endfor %}
+    {% endfor -%}
     Scenario: {{scenario.name}}
         {% set given_joiner = joiner("And") %}
         {% for given in scenario.givens -%}

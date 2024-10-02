@@ -5,7 +5,6 @@
 
 # There may be some unused imports depending on the definition of the plugin, be sure to remove unused imports.
 import yaml
-
 from os import path
 from typing import Callable
 
@@ -65,7 +64,7 @@ def gen_gherkin_behaviors(
     for yaml_object in yaml_list:
         new_file = new_file + yaml.safe_dump_all(yaml_object, default_flow_style=False, sort_keys=False, explicit_start=True)
 
-    if len(model) < 1:
+    if len(results) < 1:
         msg = ExecutionMessage(
             "No applicable behavior to generate a feature file",
             MessageLevel.ERROR,
