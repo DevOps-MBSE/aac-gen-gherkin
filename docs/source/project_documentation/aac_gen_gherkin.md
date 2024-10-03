@@ -33,23 +33,11 @@ Each `scenario` has a number of steps:
 
 ### Example Model Definition
 
-```yaml
-model:
-    name: example_name
-    description: Description of Model
-    behavior:
-        - name: example_behavior
-          description: Does something
-          acceptance:
-            - name: example_acceptance
-              scenarios:
-                - name: example scenario
-                  given:
-                    - Initial state
-                  when:
-                    - Something happens
-                  then:
-                    - The model does something in response.
+```{eval-rst}
+.. literalinclude:: ../../../python/tests/calc/model/calculator.yaml
+    :language: yaml
+    :lines: 68-81
+    :emphasize-lines: 3, 5, 7, 9, 11
 ```
 
 Along with the `scenario` steps, `features` and `scenario`s can also have requirements, signified by the `requirement ID` before the `feature` or `scenario`, such as the following feature file, which contains several highlighted examples:

@@ -3,7 +3,7 @@ AaC Gen-Gherkin Plugin
 
 Gen-Gherkin - Generate feature files from your AaC model.
 
-The AaC Gen-Gherkin (aac-gen-gherkin) Plugin is an extension of the core AaC tool and generates a diagram from an AaC model. General AaC documentation can be found `here`_.
+The AaC Gen-Gherkin (aac-gen-gherkin) Plugin is an extension of the core AaC tool and generates a feature file from an AaC model. General AaC documentation can be found `here`_.
 
 .. _here: https://arch-as-code.org
 
