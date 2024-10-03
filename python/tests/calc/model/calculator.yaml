@@ -67,12 +67,6 @@ model:
               - The response is logged.
     - name: Example behavior
       description: Example
-      input:
-        - name: request
-          type: MathRequest
-      output:
-        - name: response
-          type: MathResponse
       acceptance:
         - name: example acceptance
           scenarios:
