@@ -28,3 +28,28 @@ plugin:
                 - The aac app is run with the gen-gherkin-behaviors command and a valid architecture file.
               then:
                 - Gherkin feature files are written to {{gen-gherkin-behaviors.input.output-directory}}.
+    - name: gen-dictionary-file
+      help_text: Generate Gherkin feature files from AaC model behavior scenarios.
+      run_before:
+        - plugin: Check AaC
+          command: check
+      run_after:
+        - plugin: Generate
+          command: generate
+      input:
+        - name: architecture-file
+          type: file
+          description: The YAML file containing the data models from which to generate Gherkin feature files.
+        - name: output-directory
+          type: directory
+          description: The directory into which the generated Gherkin feature files will be written.
+      acceptance:
+        - name: Output Gherkin feature files
+          scenarios:
+            - name: Output Gherkin feature files for behavior scenarios in an Architecture model.
+              given:
+                - The {{gen-gherkin-behaviors.input.architecture-file}} contains a valid architecture.
+              when:
+                - The aac app is run with the gen-gherkin-behaviors command and a valid architecture file.
+              then:
+                - Gherkin feature files are written to {{gen-gherkin-behaviors.input.output-directory}}.

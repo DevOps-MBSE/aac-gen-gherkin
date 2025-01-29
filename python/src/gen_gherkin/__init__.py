@@ -66,6 +66,26 @@ def run_gen_gherkin_behaviors(
 
     return result
 
+def run_gen_dictionary_file(
+    architecture_file: str, output_directory: str
+) -> ExecutionResult:
+    """
+    Generate a Dictionary Steps file from AaC model behavior scenarios.
+
+    Args:
+        architecture_file (str): The YAML file containing the data models from which to generate the dictionary file.
+        output_directory (str): The directory into which the generated dictionary file will be written.
+
+    Returns:
+        The results of the execution of the plugin gen-dictionary-file command.
+    """
+
+    result = ExecutionResult(
+        plugin_name, "gen-dictionary-file", ExecutionStatus.SUCCESS, []
+    )
+
+    dictionary_file_check_result = before_gen_gherkin_behaviors(architecture_file, run_check)
+
 
 @hookimpl
 def register_plugin() -> None:
@@ -93,8 +113,7 @@ def register_plugin() -> None:
     plugin_runner = PluginRunner(
         plugin_definition=generate_gherkin_feature_files_plugin_definition
     )
-    plugin_runner.add_command_callback(
-        "gen-gherkin-behaviors", run_gen_gherkin_behaviors
-    )
+    plugin_runner.add_command_callback("gen-gherkin-behaviors", run_gen_gherkin_behaviors)
+    plugin_runner.add_command_callback("gen-dictionary-file", run_gen_dictionary_file)
 
     active_context.register_plugin_runner(plugin_runner)

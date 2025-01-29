@@ -156,10 +156,10 @@ def get_template_properties(parsed_models: dict) -> list[dict]:
     Generate a list of template property dictionaries for each gherkin feature file to generate.
 
     Args:
-        parsed_models (dict): a dict of models where the key is the model name and the value is the model dict
+        parsed_models (dict): a dict of models where the key is the model name and the value is the model dict.
 
     Returns:
-        a list of template property dictionaries
+        a list of template property dictionaries.
     """
 
     return [collect_model_behavior_properties(model) for model in collect_models(parsed_models)]
