@@ -38,6 +38,9 @@ def collect_and_sanitize_scenario_steps(scenario: dict) -> list[dict]:
             "thens": [sanitize_scenario_step_entry(then) for then in scenario["then"]],
         }
     ]
+    if "requirements" in scenario:
+        scenario_steps[0]["scenario_requirements"] = scenario["requirements"]
+    return scenario_steps
     return scenario_steps
 
 def collect_acceptance_entry_properties(name: str, acceptance_entry: dict) -> list[dict]:
@@ -55,8 +58,8 @@ def collect_acceptance_entry_properties(name: str, acceptance_entry: dict) -> li
     feature_name = sub(r"\W+", "", feature_name)
     scenario_lists = []
 
-    if "acceptance" in behavior_entry:
-        for acceptance in behavior_entry["acceptance"]:
+    if "acceptance" in acceptance_entry:
+        for acceptance in acceptance_entry["acceptance"]:
             for scenario in acceptance["scenarios"]:
                 scenario_lists.append(collect_and_sanitize_scenario_steps(scenario))
     return [
