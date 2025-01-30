@@ -1,4 +1,5 @@
 import yaml
+import json
 from os import path
 from typing import Callable
 
@@ -53,7 +54,7 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
     messages.append(ExecutionMessage(f"Successfully generated dictionary file(s) to directory: {output_directory}", MessageLevel.INFO, None, None))
     status = ExecutionStatus.SUCCESS
 
-    return new_file, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
+    return results, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
 
 
 def after_gen_dictionary_file(architecture_file: str, output_directory: str, run_generate: Callable) -> ExecutionResult:
@@ -70,16 +71,17 @@ def after_gen_dictionary_file(architecture_file: str, output_directory: str, run
 
     """
     new_file, execution_status = gen_dictionary_file(architecture_file, output_directory)
+    print(json.dumps(new_file))
 
-    generator_file = path.abspath(path.join(path.dirname(__file__), "./dictionary_generator.aac"))
+    # generator_file = path.abspath(path.join(path.dirname(__file__), "./dictionary_generator.aac"))
 
-    return run_generate(
-        aac_plugin_file=new_file,
-        generator_file=generator_file,
-        code_output=output_directory,
-        test_output="",
-        doc_output="",
-        no_prompt=True,
-        force_overwrite=True,
-        evaluate=False,
-    )
+    # return run_generate(
+    #     aac_plugin_file=new_file,
+    #     generator_file=generator_file,
+    #     code_output=output_directory,
+    #     test_output="",
+    #     doc_output="",
+    #     no_prompt=True,
+    #     force_overwrite=True,
+    #     evaluate=False,
+    # )
