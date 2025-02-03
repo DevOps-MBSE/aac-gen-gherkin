@@ -1,16 +1,17 @@
+"""Helper methods for extracting and sorting pertinent data for use in generating dictionary files."""
 from re import sub
 
-import json
 from aac.context.definition import Definition
 
 func_and_statement_json_template = {
-    "functions" : [
+    "functions": [
         "list of comma separated function strings"
     ],
-    "statements" : [
+    "statements": [
         "list of comma separated statement strings"
     ]
 }
+
 
 def collect_models(parsed_models: list[dict]) -> list:
     """
@@ -29,6 +30,7 @@ def collect_models(parsed_models: list[dict]) -> list:
 
     return collected_models
 
+
 def sanitize_scenario_step_entry(step: str) -> str:
     """
     Remove any conflicting keyword from the scenario step.
@@ -42,6 +44,7 @@ def sanitize_scenario_step_entry(step: str) -> str:
     if does_step_start_with_gherkin_keyword(step):
         return step.split(None, 1)[1]
     return step
+
 
 def collect_and_sanitize_scenario_steps(scenario: dict) -> list[dict]:
     """
@@ -95,6 +98,7 @@ def collect_acceptance_entry_properties(name: str, acceptance_entry: dict) -> li
         "feature": scenario_lists
     }
 
+
 def does_step_start_with_gherkin_keyword(step: str) -> bool:
     """
     Check if a string starts with a Gherkin keyword. Gherkin keywords can be found here: https://cucumber.io/docs/gherkin/reference/#keywords.
@@ -123,6 +127,7 @@ def does_step_start_with_gherkin_keyword(step: str) -> bool:
 
     return step.startswith(tuple(gherkin_keywords))
 
+
 def collect_model_acceptance_properties(model: Definition) -> dict:
     """
     Produce a template property dictionary for each acceptance entry in a model.
@@ -149,6 +154,7 @@ def collect_model_acceptance_properties(model: Definition) -> dict:
         "acceptance": acceptance_lists,
     }
     return returning_list
+
 
 def get_template_properties(parsed_models: dict) -> list[dict]:
     """

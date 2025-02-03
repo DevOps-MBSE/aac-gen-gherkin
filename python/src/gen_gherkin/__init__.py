@@ -21,7 +21,6 @@ from gen_gherkin.generate_gherkin_feature_files_impl import (
 )
 
 from gen_gherkin.generate_dictionary_files_impl import (
-    plugin_name,
     gen_dictionary_file,
     after_gen_dictionary_file,
 )
@@ -72,6 +71,7 @@ def run_gen_gherkin_behaviors(
 
     return result
 
+
 def run_gen_dictionary_file(
     architecture_file: str, output_directory: str
 ) -> ExecutionResult:
@@ -106,6 +106,7 @@ def run_gen_dictionary_file(
     else:
         result.add_messages(gen_dictionary_file_generate_result.messages)
     return result
+
 
 @hookimpl
 def register_plugin() -> None:

@@ -1,3 +1,4 @@
+"""The implementation module for the gen-dictionary-helpers command in the AaC Generate Gherkin Feature Files plugin."""
 import yaml
 import json
 from os import path, makedirs
@@ -75,7 +76,7 @@ def after_gen_dictionary_file(architecture_file: str, output_directory: str, run
         for acceptance in model["acceptance"]:
             for feature in acceptance["feature"]:
                 filepath = f"{output_directory}/{acceptance['name']}_{feature['name']}.json"
-                filepath = "_".join( filepath.split() )
+                filepath = "_".join(filepath.split())
                 makedirs(path.dirname(filepath), exist_ok=True)
                 f = open(filepath, "w")
                 f.write(json.dumps(feature["scenario"], indent=4))
@@ -86,16 +87,3 @@ def after_gen_dictionary_file(architecture_file: str, output_directory: str, run
         ExecutionStatus.SUCCESS,
         [ExecutionMessage(f"Successfully generated dictionary file(s) to directory: {output_directory}", MessageLevel.INFO, None, None)]
     )
-
-    # generator_file = path.abspath(path.join(path.dirname(__file__), "./dictionary_generator.aac"))
-
-    # return run_generate(
-    #     aac_plugin_file=new_file,
-    #     generator_file=generator_file,
-    #     code_output=output_directory,
-    #     test_output="",
-    #     doc_output="",
-    #     no_prompt=True,
-    #     force_overwrite=True,
-    #     evaluate=False,
-    # )
