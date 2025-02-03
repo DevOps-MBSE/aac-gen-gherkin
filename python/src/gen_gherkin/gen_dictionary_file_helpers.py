@@ -75,7 +75,8 @@ def collect_and_sanitize_scenario_steps(scenario: dict) -> list[dict]:
             steps[sanitize_scenario_step_entry(then_step)] = func_and_statement_json_template
     # print(steps)
     scenario_steps = {
-        scenario["name"]: steps
+        "name": scenario["name"],
+        "scenario": {scenario["name"]: steps}
     }
 
     if "requirements" in scenario:
@@ -112,7 +113,8 @@ def collect_acceptance_entry_properties(name: str, acceptance_entry: dict) -> li
     #     }
     # ]
     return {
-        (name + "_" + feature_name): scenario_lists
+        "name": feature_name,
+        "feature": scenario_lists
     }
 
 def does_step_start_with_gherkin_keyword(step: str) -> bool:
