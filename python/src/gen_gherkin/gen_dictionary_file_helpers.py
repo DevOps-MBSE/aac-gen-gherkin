@@ -54,34 +54,21 @@ def collect_and_sanitize_scenario_steps(scenario: dict) -> list[dict]:
         A list of template properties
     """
     steps = {}
-    # scenario_steps = [
-    #     {
-    #         "name": scenario["name"],
-    #         "givens": [sanitize_scenario_step_entry(given) for given in scenario["given"]],
-    #         "whens": [sanitize_scenario_step_entry(when) for when in scenario["when"]],
-    #         "thens": [sanitize_scenario_step_entry(then) for then in scenario["then"]],
-    #     }
-    # ]
-    # print(scenario)
+    if "requirements" in scenario:
+        steps["scenario_requirements"] = scenario["requirements"]
     if "given" in scenario:
         for given_step in scenario["given"]:
             steps[sanitize_scenario_step_entry(given_step)] = func_and_statement_json_template
-
     if "when" in scenario:
         for when_step in scenario["when"]:
             steps[sanitize_scenario_step_entry(when_step)] = func_and_statement_json_template
     if "then" in scenario:
         for then_step in scenario["then"]:
             steps[sanitize_scenario_step_entry(then_step)] = func_and_statement_json_template
-    # print(steps)
     scenario_steps = {
         "name": scenario["name"],
         "scenario": {scenario["name"]: steps}
     }
-
-    if "requirements" in scenario:
-        scenario_steps["scenario_requirements"] = scenario["requirements"]
-    # print(scenario_steps)
     return scenario_steps
 
 
@@ -103,15 +90,6 @@ def collect_acceptance_entry_properties(name: str, acceptance_entry: dict) -> li
     if "scenarios" in acceptance_entry:
         for scenario in acceptance_entry["scenarios"]:
             scenario_lists.append(collect_and_sanitize_scenario_steps(scenario))
-    # print(acceptance_entry)
-    # print("SEPERATOR")
-    # print(scenario_lists)
-    # return [
-    #     {
-    #         "name": (name + "_" + feature_name),
-    #         "scenarios": [scenario for scenario_list in scenario_lists for scenario in scenario_list],
-    #     }
-    # ]
     return {
         "name": feature_name,
         "feature": scenario_lists
@@ -170,7 +148,6 @@ def collect_model_acceptance_properties(model: Definition) -> dict:
         "name": model.name,
         "acceptance": acceptance_lists,
     }
-    print(json.dumps(returning_list))
     return returning_list
 
 def get_template_properties(parsed_models: dict) -> list[dict]:
