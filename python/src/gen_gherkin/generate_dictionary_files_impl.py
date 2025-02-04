@@ -17,6 +17,20 @@ from .gen_dictionary_file_helpers import get_template_properties
 plugin_name = "Generate Gherkin Feature Files"
 
 
+def before_gen_dictionary_file(architecture_file: str, run_check: Callable) -> ExecutionResult:
+    """
+    Run the Check AaC command before the gen-dictionary_file command.
+
+    Args:
+        architecture_file (str): A path to a YAML file containing an AaC-defined use model
+        run_check (Callable): Callback reference to the run_check method from the Check plugin.
+
+    Returns:
+        The results of the execution of the check command.
+    """
+    return run_check(architecture_file, False, False)
+
+
 def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[str, ExecutionResult]:
     """
     Business logic for allowing gen-dictionary-file command to generate dictionary step files.
@@ -58,14 +72,13 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
     return results, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
 
 
-def after_gen_dictionary_file(architecture_file: str, output_directory: str, run_generate: Callable) -> ExecutionResult:
+def after_gen_dictionary_file(architecture_file: str, output_directory: str) -> ExecutionResult:
     """
     Runs Generate on the output of the gen_dictionary_file plugin command.
 
     Args:
         architecture_file (str): The YAML file containing the data models from which to generate a Dictionary File.
         output_directory (str): The directory into which the generated dictionary files will be written.
-        run_generate (Callable): The Generation function which generates a dictionary file
 
     Returns:
         The results of the execution of the generate command.

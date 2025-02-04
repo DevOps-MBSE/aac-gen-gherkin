@@ -34,7 +34,7 @@ class TestGenerateDictionaryFiles(TestCase):
 
     def test_cli_gen_dictionary_file(self):
         with TemporaryDirectory() as temp_dir:
-            aac_file_path = path.join(path.dirname(__file__), "calc/model/calculator.yaml")
+            aac_file_path = path.join(path.dirname(__file__), "calc/model/dictionary_step.aac")
             args = [aac_file_path, temp_dir]
             exit_code, output_message = (self.run_gen_dictionary_file_cli_command_with_args(args))
             self.assertEqual(0, exit_code)
@@ -48,7 +48,8 @@ class TestGenerateDictionaryFiles(TestCase):
                 temp_content = temp_file_content.read()
                 self.assertIn('"functions":', temp_content)
                 self.assertIn('"statements":', temp_content)
-                self.assertIn('"list of comma separated function strings"', temp_content)
+                self.assertIn('"No functions found"', temp_content)
+                self.assertIn('"No statements found"', temp_content)
                 temp_file_content.close()
 
 

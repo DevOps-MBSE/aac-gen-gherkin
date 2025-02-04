@@ -21,6 +21,7 @@ from gen_gherkin.generate_gherkin_feature_files_impl import (
 )
 
 from gen_gherkin.generate_dictionary_files_impl import (
+    before_gen_dictionary_file,
     gen_dictionary_file,
     after_gen_dictionary_file,
 )
@@ -90,17 +91,17 @@ def run_gen_dictionary_file(
         plugin_name, "gen-dictionary-file", ExecutionStatus.SUCCESS, []
     )
 
-    dictionary_file_check_result = before_gen_gherkin_behaviors(architecture_file, run_check)
-    if not dictionary_file_check_result.is_success():
-        return dictionary_file_check_result
+    gen_dictionary_file_check_result = before_gen_dictionary_file(architecture_file, run_check)
+    if not gen_dictionary_file_check_result.is_success():
+        return gen_dictionary_file_check_result
     else:
-        result.add_messages(dictionary_file_check_result.messages)
+        result.add_messages(gen_dictionary_file_check_result.messages)
     content, gen_dictionary_file_result = gen_dictionary_file(architecture_file, output_directory)
     if not gen_dictionary_file_result.is_success():
         return gen_dictionary_file_result
     else:
         result.add_messages(gen_dictionary_file_result.messages)
-    gen_dictionary_file_generate_result = after_gen_dictionary_file(architecture_file, output_directory, run_generate)
+    gen_dictionary_file_generate_result = after_gen_dictionary_file(architecture_file, output_directory)
     if not gen_dictionary_file_generate_result.is_success():
         return gen_dictionary_file_generate_result
     else:
