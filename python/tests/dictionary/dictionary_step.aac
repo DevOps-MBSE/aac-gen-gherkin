@@ -1,0 +1,32 @@
+dictionary_step:
+    name: Stuff is Happening
+    feature_name: feature_1
+    statements:
+        - It Happens.
+        - It Continues to Happen.
+        - It Stops happening.
+    functions:
+        - start_thing
+        - stop_thing
+---
+dictionary_step:
+    name: Selling Stuff
+    feature_name: feature_1
+    statements:
+        - Give thing to person.
+        - Take persons money in exchange for thing.
+    functions:
+        - money_exchange.
+---
+dictionary_step:
+    name: Not knowing
+    feature_name: feature_2
+    statements:
+        - No idea.
+        - No clue.
+        - I got nothing.
+    functions:
+        - Huh?
+        - What?
+        - Uhhhh
+

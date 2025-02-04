@@ -62,6 +62,8 @@ schema:
     fields:
         - name: name
           type: string
+        - name: feature_name
+          type: string
         - name: statements
           type: string[]
         - name: functions

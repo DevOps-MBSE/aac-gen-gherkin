@@ -45,19 +45,41 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
     status = ExecutionStatus.GENERAL_FAILURE
     messages: list[ExecutionMessage] = []
 
-    definitions_dictionary = parse(architecture_file)
+    dictionary_steps = parse(architecture_file)
+    # for d in dictionary_steps:
+    #     print(d.structure)
+    # results = get_template_properties(definitions_dictionary)
+    # yaml_list = []
+    # for model in results:
+    #     for acceptance in model["acceptance"]:
+    #         yaml_list.append([{"acceptance": acceptance}])
 
-    results = get_template_properties(definitions_dictionary)
-    yaml_list = []
-    for model in results:
-        for acceptance in model["acceptance"]:
-            yaml_list.append([{"acceptance": acceptance}])
+    # new_file = ""
+    # for yaml_object in yaml_list:
+    #     new_file = new_file + yaml.safe_dump_all(yaml_object, default_flow_style=False, sort_keys=False, explicit_start=True)
+    # dictionary_steps = definitions_dictionary.structure
+    files = {}
+    for dictionary_step_definition in dictionary_steps:
+        # print(dictionary_step_definition)
+        dictionary_step = dictionary_step_definition.structure["dictionary_step"]
+        # print(dictionary_step)
+        if dictionary_step["feature_name"] in files.keys():
+            files[dictionary_step["feature_name"]][dictionary_step["name"]] = {
+                "statements": dictionary_step["statements"],
+                "functions": dictionary_step["functions"]
+            }
+            # print(files[dictionary_step["feature_name"]])
+        else:
+            files[dictionary_step["feature_name"]] = {
+                dictionary_step["name"]: {
+                    "statements": dictionary_step["statements"],
+                    "functions": dictionary_step["functions"]
+                }
+            }
+            # print(files[dictionary_step["feature_name"]])
+    # print(files)
 
-    new_file = ""
-    for yaml_object in yaml_list:
-        new_file = new_file + yaml.safe_dump_all(yaml_object, default_flow_style=False, sort_keys=False, explicit_start=True)
-
-    if len(results) < 1:
+    if len(files.keys()) < 1:
         msg = ExecutionMessage(
             "No applicable acceptance feature to generate a dictionary file",
             MessageLevel.ERROR,
@@ -69,7 +91,7 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
     messages.append(ExecutionMessage(f"Successfully generated dictionary file(s) to directory: {output_directory}", MessageLevel.INFO, None, None))
     status = ExecutionStatus.SUCCESS
 
-    return results, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
+    return files, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
 
 
 def after_gen_dictionary_file(architecture_file: str, output_directory: str) -> ExecutionResult:
@@ -84,15 +106,16 @@ def after_gen_dictionary_file(architecture_file: str, output_directory: str) -> 
         The results of the execution of the generate command.
 
     """
-    new_file, execution_status = gen_dictionary_file(architecture_file, output_directory)
-    for model in new_file:
-        for acceptance in model["acceptance"]:
-            for feature in acceptance["feature"]:
-                filepath = f"{output_directory}/{acceptance['name']}_{feature['name']}.json"
-                filepath = "_".join(filepath.split())
-                makedirs(path.dirname(filepath), exist_ok=True)
-                f = open(filepath, "w")
-                f.write(json.dumps(feature["scenario"], indent=4))
+    files, execution_status = gen_dictionary_file(architecture_file, output_directory)
+    for key in files.keys():
+
+            # print("======")
+        filepath = f"{output_directory}/{key}.json"
+        filepath = "_".join(filepath.split())
+        makedirs(path.dirname(filepath), exist_ok=True)
+        f = open(filepath, "w")
+        f.write(json.dumps(files[key], indent=4))
+        f.close
 
     return ExecutionResult(
         plugin_name,

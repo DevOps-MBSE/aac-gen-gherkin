@@ -191,3 +191,27 @@ def get_template_properties(parsed_models: dict) -> list[dict]:
     """
 
     return [collect_model_acceptance_properties(model) for model in collect_models(parsed_models)]
+
+
+def create_json_files(dictionary_steps_definition: Definition):
+    dictionary_steps = dictionary_steps_definition.structure["dictionary_step"]
+    files = {}
+    print(dictionary_steps)
+    for dictionary_step in dictionary_steps:
+        print(dictionary_step)
+        if dictionary_step["feature_name"] in files.keys:
+            files[dictionary_step["feature_name"]].append({
+                dictionary_step.structure["name"]: {
+                    "statements": dictionary_step["statements"],
+                    "functions": dictionary_step["functions"]
+                }
+            })
+        else:
+            files[dictionary_step["feature_name"]] = [{
+                dictionary_step.structure["name"]: {
+                    "statements": dictionary_step["statements"],
+                    "functions": dictionary_step["functions"]
+                }
+            }]
+    return files
+
