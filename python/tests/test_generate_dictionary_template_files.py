@@ -42,13 +42,19 @@ class TestGenerateDictionaryFiles(TestCase):
 
             temp_dir_files = listdir(temp_dir)
             self.assertNotEqual(0, len(temp_dir_files))
-            for temp_file in temp_dir_files:
-                self.assertTrue(temp_file.find(".json"))
-                temp_file_content = open(path.join(temp_dir, temp_file), "r")
-                temp_content = temp_file_content.read()
-                self.assertIn('"functions":', temp_content)
-                self.assertIn('"statements":', temp_content)
-                temp_file_content.close()
+            self.assertIn("feature_1.json", temp_dir_files)
+            self.assertIn("feature_2.json", temp_dir_files)
+
+            file = open(path.join(temp_dir, "feature_1.json"), "r")
+            file_content = file.read()
+            self.assertIn('"Stuff is Happening":', file_content)
+            self.assertIn('"Selling Stuff":', file_content)
+            file.close()
+
+            file = open(path.join(temp_dir, "feature_2.json"), "r")
+            file_content = file.read()
+            self.assertIn('"Not knowing":', file_content)
+            file.close()
 
 
     def test_cli_gen_gherkin_behaviors_failure(self):
@@ -57,4 +63,4 @@ class TestGenerateDictionaryFiles(TestCase):
             args = [aac_file_path, temp_dir]
             exit_code, output_message = (self.run_gen_dictionary_file_cli_command_with_args(args))
             self.assertNotEqual(0, exit_code)
-            self.assertIn("No applicable acceptance feature to generate a dictionary file", output_message)
+            self.assertIn("No step definitions to generate a dictionary steps file", output_message)

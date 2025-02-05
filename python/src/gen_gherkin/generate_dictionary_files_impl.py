@@ -1,4 +1,4 @@
-"""The implementation module for the gen-dictionary-helpers command in the AaC Generate Gherkin Feature Files plugin."""
+"""The implementation module for the gen-dictionary-file command in the AaC Generate Gherkin plugin."""
 import json
 from os import path, makedirs
 from typing import Callable
@@ -11,19 +11,19 @@ from aac.execute.aac_execution_result import (
 )
 from aac.in_out.parser._parse_source import parse
 
-plugin_name = "Generate Gherkin Feature Files"
+plugin_name = "Generate Dictionary Step Files"
 
 
 def before_gen_dictionary_file(architecture_file: str, run_check: Callable) -> ExecutionResult:
     """
-    Run the Check AaC command before the gen-dictionary_file command.
+    Run the Check AaC command before the gen-dictionary-file command.
 
     Args:
-        architecture_file (str): A path to a YAML file containing an AaC-defined use model
+        architecture_file (str): A path to a YAML file containing an AaC-defined model.
         run_check (Callable): Callback reference to the run_check method from the Check plugin.
 
     Returns:
-        The results of the execution of the check command.
+        ExecutionResult: The results of the execution of the check command.
     """
     return run_check(architecture_file, False, False)
 
@@ -37,7 +37,7 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
         output_directory (str): The directory into which the generated dictionary files will be written.
 
     Returns:
-        The results of the execution of the gen-dictionary-file command.
+        tuple[str, ExecutionResult]: The results of the execution of the gen-dictionary-file command.
     """
     status = ExecutionStatus.GENERAL_FAILURE
     messages: list[ExecutionMessage] = []
@@ -63,13 +63,13 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
 
     if len(files.keys()) < 1:
         msg = ExecutionMessage(
-            "No applicable acceptance feature to generate a dictionary file",
+            "No step definitions to generate a dictionary steps file.",
             MessageLevel.ERROR,
             None,
             None,
         )
         messages.append(msg)
-        return None, ExecutionResult(plugin_name, "gen-dictionary-file", ExecutionStatus.GENERAL_FAILURE, messages)
+        return None, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
     messages.append(ExecutionMessage(f"Successfully generated dictionary file(s) to directory: {output_directory}", MessageLevel.INFO, None, None))
     status = ExecutionStatus.SUCCESS
 

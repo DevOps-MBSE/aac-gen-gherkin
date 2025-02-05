@@ -46,13 +46,13 @@ plugin:
       acceptance:
         - name: Output Dictionary Step files
           scenarios:
-            - name: Output Gherkin feature files for behavior scenarios in an Architecture model.
+            - name: Output Dictionary Step files for behavior scenarios in an Architecture model.
               given:
                 - The {{gen-dictionary-file.input.architecture-file}} contains a valid architecture.
               when:
                 - The aac app is run with the gen-dictionary-file command and a valid architecture file.
               then:
-                - Gherkin feature files are written to {{gen-dictionary-file.input.output-directory}}.
+                - Dictionary step files are written to {{gen-dictionary-file.input.output-directory}}.
 ---
 schema:
     name: Dictionary Steps
