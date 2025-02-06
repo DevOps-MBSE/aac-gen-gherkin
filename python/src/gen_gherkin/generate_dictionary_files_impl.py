@@ -1,6 +1,6 @@
 """The implementation module for the gen-dictionary-file command in the AaC Generate Gherkin plugin."""
-import json
-from os import path, makedirs
+import yaml
+from os import path
 from typing import Callable
 
 from aac.execute.aac_execution_result import (
@@ -49,17 +49,28 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
         if "dictionary_step" in dictionary_step_definition.content:
             dictionary_step = dictionary_step_definition.structure["dictionary_step"]
             if dictionary_step["feature_name"] in files.keys():
-                files[dictionary_step["feature_name"]][dictionary_step["name"]] = {
+                files[dictionary_step["feature_name"]]["steps"].append({
+                    "name": dictionary_step["name"],
                     "statements": dictionary_step["statements"],
                     "functions": dictionary_step["functions"]
-                }
+                })
             else:
                 files[dictionary_step["feature_name"]] = {
-                    dictionary_step["name"]: {
+                    "name": dictionary_step["feature_name"],
+                    "steps": [{
+                        "name": dictionary_step["name"],
                         "statements": dictionary_step["statements"],
                         "functions": dictionary_step["functions"]
-                    }
+                    }]
                 }
+    file_list = []
+    for key in files.keys():
+        file_list.append({"dictionary": files[key]})
+
+    yaml_list = ""
+    for key in files.keys():
+        print(files[key])
+        yaml_list = yaml_list + yaml.safe_dump_all(file_list, default_flow_style=False, sort_keys=False, explicit_start=True)
 
     if len(files.keys()) < 1:
         msg = ExecutionMessage(
@@ -73,34 +84,33 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
     messages.append(ExecutionMessage(f"Successfully generated dictionary file(s) to directory: {output_directory}", MessageLevel.INFO, None, None))
     status = ExecutionStatus.SUCCESS
 
-    return files, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
+    return yaml_list, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
 
 
-def after_gen_dictionary_file(architecture_file: str, output_directory: str) -> ExecutionResult:
+def after_gen_dictionary_file(architecture_file: str, output_directory: str, run_generate: Callable) -> ExecutionResult:
     """
     Runs Generate on the output of the gen_dictionary_file plugin command.
 
     Args:
         architecture_file (str): The YAML file containing the data models from which to generate a Dictionary File.
         output_directory (str): The directory into which the generated dictionary files will be written.
+        run_generate (Callable): The Generation function which generates a feature file
 
     Returns:
         The results of the execution of the generate command.
 
     """
-    files, execution_status = gen_dictionary_file(architecture_file, output_directory)
-    for key in files.keys():
+    new_file, execution_status = gen_dictionary_file(architecture_file, output_directory)
 
-        filepath = f"{output_directory}/{key}.json"
-        filepath = "_".join(filepath.split())
-        makedirs(path.dirname(filepath), exist_ok=True)
-        f = open(filepath, "w")
-        f.write(json.dumps(files[key], indent=4))
-        f.close
+    generator_file = path.abspath(path.join(path.dirname(__file__), "./dictionary_generator.aac"))
 
-    return ExecutionResult(
-        plugin_name,
-        "gen-dictionary-file",
-        ExecutionStatus.SUCCESS,
-        [ExecutionMessage(f"Successfully generated dictionary file(s) to directory: {output_directory}", MessageLevel.INFO, None, None)]
+    return run_generate(
+        aac_plugin_file=new_file,
+        generator_file=generator_file,
+        code_output=output_directory,
+        test_output="",
+        doc_output="",
+        no_prompt=True,
+        force_overwrite=True,
+        evaluate=False,
     )

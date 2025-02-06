@@ -101,7 +101,7 @@ def run_gen_dictionary_file(
         return gen_dictionary_file_result
     else:
         result.add_messages(gen_dictionary_file_result.messages)
-    gen_dictionary_file_generate_result = after_gen_dictionary_file(architecture_file, output_directory)
+    gen_dictionary_file_generate_result = after_gen_dictionary_file(architecture_file, output_directory, run_generate)
     if not gen_dictionary_file_generate_result.is_success():
         return gen_dictionary_file_generate_result
     else:

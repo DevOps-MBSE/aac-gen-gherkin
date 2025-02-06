@@ -1,0 +1,16 @@
+{
+{%- for step in dictionary.steps %}
+    "{{step.name}}": {
+        "functions": [
+            {%- for function in step.functions %}
+            "{{function}}"{{ ", " if not loop.last else "" }}
+            {%- endfor %}
+        ],
+        "statements" : [
+            {%- for statement in step.statements %}
+            "{{statement}}"{{ ", " if not loop.last else "" }}
+            {%- endfor %}
+        ]
+    }{{ ", " if not loop.last else "" }}
+{%- endfor %}
+}
