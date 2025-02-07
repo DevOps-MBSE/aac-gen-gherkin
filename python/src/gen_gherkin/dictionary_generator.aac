@@ -1,12 +1,12 @@
 generator:
     name: Dictionary Step Generator
-    description: A component diagram generation action for the gen-dictionary-step command in the Gen-Gherkin plugin.
+    description: A JSON generation action for the gen-dictionary-step command in the Gen-Gherkin plugin.
     sources:
-        - name: Dictionary Step diagram
+        - name: Dictionary Step JSON
           data_source: dictionary
           templates:
-            - name: Feature File
-              description: Generates a feature file based on model data.
+            - name: Dictionary Steps JSON
+              description: Generates a JSON file based on model data.
               template_file: ./dictionary_step.jinja2
               overwrite: OVERWRITE
               output_target: CODE

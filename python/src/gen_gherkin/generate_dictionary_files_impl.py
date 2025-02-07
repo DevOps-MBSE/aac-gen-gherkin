@@ -63,14 +63,13 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
                         "functions": dictionary_step["functions"]
                     }]
                 }
-    file_list = []
+    dictionary_list = []
     for key in files.keys():
-        file_list.append({"dictionary": files[key]})
+        dictionary_list.append([{"dictionary": files[key]}])
 
-    yaml_list = ""
-    for key in files.keys():
-        print(files[key])
-        yaml_list = yaml_list + yaml.safe_dump_all(file_list, default_flow_style=False, sort_keys=False, explicit_start=True)
+    new_file = ""
+    for dictionary in dictionary_list:
+        new_file = new_file + yaml.safe_dump_all(dictionary, default_flow_style=False, sort_keys=False, explicit_start=True)
 
     if len(files.keys()) < 1:
         msg = ExecutionMessage(
@@ -84,7 +83,7 @@ def gen_dictionary_file(architecture_file: str, output_directory: str) -> tuple[
     messages.append(ExecutionMessage(f"Successfully generated dictionary file(s) to directory: {output_directory}", MessageLevel.INFO, None, None))
     status = ExecutionStatus.SUCCESS
 
-    return yaml_list, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
+    return new_file, ExecutionResult(plugin_name, "gen-dictionary-file", status, messages)
 
 
 def after_gen_dictionary_file(architecture_file: str, output_directory: str, run_generate: Callable) -> ExecutionResult:
