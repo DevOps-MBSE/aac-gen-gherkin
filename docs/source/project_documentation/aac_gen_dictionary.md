@@ -11,10 +11,10 @@ aac gen-dictionary-file architecture-file.aac output/directory
 ### Arguments
 
 #### Architecture File
-The AaC file containing the `dictionary_step` definition/s.
+The AaC file containing the `dictionary_step` definition(s).
 
 #### Output Directory
-The directory in which the gherkin feature files will be generated.
+The directory in which the dictionary step JSON file(s) will be generated.
 
 ## Dictionary Step Definition
 The `gen-dictionary-file` command will generate dictionary step files based on the `dictionary_step` definition, which will appear as follows:
@@ -49,6 +49,7 @@ It will also return the following output to the command line:
 
 ```bash
 All AaC constraint checks were successful.
+    Source: tests/dictionary/dictionary_step.aac
 Successfully generated dictionary file(s) to directory: ./output
 ```
 If the architecture file provided to the command is not a dictionary step it will return the following failure message to the command line:
