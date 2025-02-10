@@ -64,7 +64,9 @@ After running the above command, the following two dictionary step files will be
 The contents of these generated files are bellow:
 
 `feature_1.json`:
+
 ![Feature 1 Example](../images/feature_1_json.png)
 
 `feature_2.json`:
+
 ![Feature 2 Example](../images/feature_2_json.png)

@@ -23,4 +23,5 @@ Install the AaC Gen-Gherkin plugin using pip::
    :hidden:
 
     Gen Gherkin Behaviors <project_documentation/aac_gen_gherkin>
+    Gen Dictionary File <project_documentation/aac_gen_dictionary>
 
