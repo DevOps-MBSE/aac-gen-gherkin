@@ -20,6 +20,12 @@ from gen_gherkin.generate_gherkin_feature_files_impl import (
     after_gen_gherkin_behaviors,
 )
 
+from gen_gherkin.generate_dictionary_files_impl import (
+    before_gen_dictionary_file,
+    gen_dictionary_file,
+    after_gen_dictionary_file,
+)
+
 
 generate_gherkin_feature_files_aac_file_name = "generate_gherkin_feature_files.aac"
 
@@ -67,6 +73,42 @@ def run_gen_gherkin_behaviors(
     return result
 
 
+def run_gen_dictionary_file(
+    architecture_file: str, output_directory: str
+) -> ExecutionResult:
+    """
+    Generate a Dictionary Steps file from AaC model behavior scenarios.
+
+    Args:
+        architecture_file (str): The YAML file containing the data models from which to generate the dictionary file.
+        output_directory (str): The directory into which the generated dictionary file will be written.
+
+    Returns:
+        The results of the execution of the plugin gen-dictionary-file command.
+    """
+
+    result = ExecutionResult(
+        plugin_name, "gen-dictionary-file", ExecutionStatus.SUCCESS, []
+    )
+
+    gen_dictionary_file_check_result = before_gen_dictionary_file(architecture_file, run_check)
+    if not gen_dictionary_file_check_result.is_success():
+        return gen_dictionary_file_check_result
+    else:
+        result.add_messages(gen_dictionary_file_check_result.messages)
+    content, gen_dictionary_file_result = gen_dictionary_file(architecture_file, output_directory)
+    if not gen_dictionary_file_result.is_success():
+        return gen_dictionary_file_result
+    else:
+        result.add_messages(gen_dictionary_file_result.messages)
+    gen_dictionary_file_generate_result = after_gen_dictionary_file(architecture_file, output_directory, run_generate)
+    if not gen_dictionary_file_generate_result.is_success():
+        return gen_dictionary_file_generate_result
+    else:
+        result.add_messages(gen_dictionary_file_generate_result.messages)
+    return result
+
+
 @hookimpl
 def register_plugin() -> None:
     """
@@ -93,8 +135,7 @@ def register_plugin() -> None:
     plugin_runner = PluginRunner(
         plugin_definition=generate_gherkin_feature_files_plugin_definition
     )
-    plugin_runner.add_command_callback(
-        "gen-gherkin-behaviors", run_gen_gherkin_behaviors
-    )
+    plugin_runner.add_command_callback("gen-gherkin-behaviors", run_gen_gherkin_behaviors)
+    plugin_runner.add_command_callback("gen-dictionary-file", run_gen_dictionary_file)
 
     active_context.register_plugin_runner(plugin_runner)

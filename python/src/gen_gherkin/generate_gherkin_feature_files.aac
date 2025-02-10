@@ -28,3 +28,43 @@ plugin:
                 - The aac app is run with the gen-gherkin-behaviors command and a valid architecture file.
               then:
                 - Gherkin feature files are written to {{gen-gherkin-behaviors.input.output-directory}}.
+    - name: gen-dictionary-file
+      help_text: Generate dictionary step files from AaC model behavior scenarios.
+      run_before:
+        - plugin: Check AaC
+          command: check
+      run_after:
+        - plugin: Generate
+          command: generate
+      input:
+        - name: architecture-file
+          type: file
+          description: The YAML file containing the data models from which to generate dictionary step files.
+        - name: output-directory
+          type: directory
+          description: The directory into which the generated dictionary step files will be written.
+      acceptance:
+        - name: Output Dictionary Step files
+          scenarios:
+            - name: Output Dictionary Step files for behavior scenarios in an Architecture model.
+              given:
+                - The {{gen-dictionary-file.input.architecture-file}} contains a valid architecture.
+              when:
+                - The aac app is run with the gen-dictionary-file command and a valid architecture file.
+              then:
+                - Dictionary step files are written to {{gen-dictionary-file.input.output-directory}}.
+---
+schema:
+    name: Dictionary Steps
+    package: gen_gherkin
+    root: dictionary_step
+    description: Entries for dictionary step files
+    fields:
+        - name: name
+          type: string
+        - name: feature_name
+          type: string
+        - name: statements
+          type: string[]
+        - name: functions
+          type: string[]
