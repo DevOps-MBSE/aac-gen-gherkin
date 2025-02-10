@@ -159,7 +159,7 @@ def get_template_properties(parsed_models: dict) -> list[dict]:
         parsed_models (dict): A dict of models where the key is the model name and the value is the model dict.
 
     Returns:
-        list[dict]: A list of template property dictionaries.  
+        list[dict]: A list of template property dictionaries.
     """
 
     return [collect_model_behavior_properties(model) for model in collect_models(parsed_models)]
